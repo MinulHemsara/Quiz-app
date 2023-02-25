@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import './quiz.dart';
 import './answer.dart';
+import './qiz.dart';
+import './result.dart';
 
 void main() => runApp(MyApp());
 
@@ -17,37 +19,45 @@ class MyAppState extends State<MyApp> {
     {
       'quizText': 'what is your favourite colour ?',
       'answers': [
-        'Black',
-        'Green',
-        'Red',
+        {'text': 'Black', 'score': 10},
+        {'text': 'Green', 'score': 5},
+        {'text': 'Red', 'score': 6},
       ]
     },
     {
       'quizText': 'what is your favourite food',
       'answers': [
-        'Rice',
-        'Pizza',
-        'Burger',
+        {'text': 'Rice', 'score': 12},
+        {'text': 'Pizza', 'score': 2},
+        {'text': 'Burger', 'score': 11},
       ]
     },
     {
       'quizText': 'what is your favourite car',
       'answers': [
-        'Toyota',
-        'Bena',
-        'BMW',
+        {'text': 'Toyota', 'score': 12},
+        {'text': 'Benz', 'score': 12},
+        {'text': 'BMW', 'score': 12},
       ]
     },
   ];
 
   var quizindex = 0;
+  var totalScore = 0;
 
-  void answerQuiz() {
-    var aBool = true;
-    var fBool = false;
-    if (quizindex < quiz.length) {
-      print("NEXT");
-    }
+  void resetQuiz() {
+    setState(() {
+      var questionIndex = 0;
+      totalScore = 0;
+    });
+  }
+
+  void answerQuiz(int score) {
+    // var aBool = true;
+    // var fBool = false;
+
+    totalScore = totalScore += score;
+
     setState(() {
       quizindex = quizindex + 1;
     });
@@ -61,22 +71,8 @@ class MyAppState extends State<MyApp> {
       home: Scaffold(
         appBar: AppBar(title: Text('Hello world')),
         body: quizindex < quiz.length
-            ? Column(
-                children: [
-                  Quiz(
-                    quiz[quizindex]['quizText'],
-                  ),
-                  ...(quiz[quizindex]['answers'] as List<String>).map((answer) {
-                    return Answer(answerQuiz, answer);
-                  }).toList()
-                ],
-              )
-            : Center(
-                child: Text(
-                  'You did it!',
-                  style: TextStyle(backgroundColor: Colors.grey),
-                ),
-              ),
+            ? qiz(answerQuiz: answerQuiz, quizindex: quizindex, quiz: quiz)
+            : Result(totalScore, resetQuiz),
       ),
     );
   }
